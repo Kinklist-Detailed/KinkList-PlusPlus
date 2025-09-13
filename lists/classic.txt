@@ -1,3 +1,19 @@
+- Favorite: #A042FF
+? This is one of your all-time favorite kinks, above all else.
+- Love: #6DB5FE
+? This is a kink that you really enjoy, though not your favorite.
+- Like: #23FD22 
+? This is a kink that you're okay with.
+- Indifferent: #FDFD6B
+? This kink doesn't excite nor disgust you - you generally have no preference.
+- Maybe: #DB6C00
+? This kink is something you dislike, but it isn't a hard "no" due to circumstances.
+- Limit: #920000
+? This kink is a hard "no" for you, and you'll never want to engage with.
+
+> The default "Classic" list from Kinklist. Created by adhesivecheese
+
+
 #Bodies
 (General)
 * Skinny
@@ -12,10 +28,6 @@
 ? Expresses an interest in cocks that are below average size.
 * Large cocks
 ? Expresses an interest in cocks taht are above average size.
-* Small butts
-? Expresses an interest in butts that are particularly small.
-* Big Butts
-? Expresses an interest in butts that are particularly large.
 
 #Clothing
 (Self, Partner)
@@ -36,22 +48,17 @@
 * Cross-dressing
 ? Engaging in an RP where one or more characters dress in the clothes of the gender opposite to their own.
 
-#Roles & Groupings
-(Self, Partner)
-* as Male
-* as Female
-* as Femboy
-* as Futa
-* as MtF trans
-* as FtM trans
-* as male & female
-* as multiple males
-* as multiple females
-* as multiple males & females
-* as Dominant
-* as Submissive
-* as Switch
-* as Celebrity
+#Groupings
+(General)
+* You and 1 male
+* You and 1 female
+* You and MtF trans
+* You and FtM trans
+* You and 1 male, 1 female
+* You and 2 males
+* You and 2 females
+* Orgy
+? multiple male and female characters
 
 #General
 (Giving, Receiving)
@@ -144,8 +151,6 @@
 
 #No consent
 (Aggressor, Target)
-* Dubious consent
-? situations where one partner's consent is in question, though not outright rape.
 * Non-con / rape
 ? taking/being taken against one's will, often through force
 * Blackmail / coercion
@@ -167,7 +172,7 @@
 ? Refers to scenes in which there is a signifigant gap in the ages of characters.
 * Interracial
 ? Scenes based on interracial interactions without relying on racial stereotypes.
-* Raceplay
+*Raceplay
 ? Scenes based on racial stereotypes or racism, including scenes set in racist settings.
 * Bestiality
 ? Refers to a sapient character engaging in a sexual act with a non-sapient animal, or playing a non-sapient animal in an RP and being engaged by a sapient character.
@@ -211,8 +216,6 @@
 ? A situation in which at least one character will wear a diaper; typically implies that the diaper will be soiled with urine and/or fecal matter, usually in conjunction with age play or infantilism, but sometimes in conjunction with humiliation.
 * Cum play
 ? Any number of situations focused on playing with cum.
-* Saliva/Spit
-? Sexual play involving saliva or Spit
 
 #Degradation
 (Giving, Receiving)
@@ -254,7 +257,6 @@
 ? Feminization is a type of role play that involves imposing traditionally female attributes onto a submissive male partner. It may also involve an adoption of traditionally feminine behaviors and mannerisms.
 * Cuckold / Cuckquean
 ? Refers to the act of a character who, within the confines of the RP world has been designated to be in a relationship, will have sexual interaction with a character other than the one who has been predetermined to be in a relationship, in the context of the RP.
-* Shaving
 
 #Pain
 (Giving, Receiving)
@@ -288,36 +290,3 @@
 ? The act of biting or being bitten; sometimes painful, sometimes playful.
 * Cutting 
 ? The act of cutting a partner to cause pain in a sexual context.
-* Snuff
-? Murdering a character as part of sex.
-
-#Meta
-(Self, Partner)
-* First Person
-* Third Person
-* Short Post Length (~1-3 sentences)
-* Medium Post Length (~3-7 sentences)
-* Long Post Length (~2-4 paragraphs)
-* Story (3+ paragraphs)
-* Dynamic Post Length
-
-#Medium
-(General)
-* Skype
-* Kik
-* Reddit
-* E-Mail
-* Discord
-* Other
-
-#Time-Scale
-(Self, Partner)
-* Short-Term Scenes
-* Medium-Term Scenes
-* Long-Term Scenes
-* Quick Replies (0~10 mins)
-* Fast Replies (10~30 mins)
-* Normal Replies (30min ~ 2hours)
-* Slow Replies (2~8 hours)
-* Glacial Replies (8-24 hours)
-* Occasional Replies (24+ hours)

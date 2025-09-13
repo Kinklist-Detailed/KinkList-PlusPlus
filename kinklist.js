@@ -19,8 +19,9 @@ var strToClass = function(str){
     }
     return className;
 };
-var addCssRule = function(selector, rules){
+var updateCssRule = function(selector, rules){
     var sheet = document.styleSheets[0];
+    // Insert (backwards-compat with deprecated addRule)
     if("insertRule" in sheet) {
         sheet.insertRule(selector + "{" + rules + "}", 0);
     }
@@ -28,30 +29,47 @@ var addCssRule = function(selector, rules){
         sheet.addRule(selector, rules, 0);
     }
 };
+// https://stackoverflow.com/a/7627603
+var getCssName = function(inputName) {
+    // Return a "sanitized" name for CSS styling
+    return inputName.replace(/[^a-z0-9]/g, function(s) {
+        var c = s.charCodeAt(0);
+        if (c == 32) return '-';
+        if (c >= 65 && c <= 90) return '_' + s.toLowerCase();
+        return '__' + ('000' + c.toString(16)).slice(-4);
+    });
+}
+var updateTheme = function(themeName) {
+    // Remove all theme classes first
+    $("body").removeClass("dark-mode");
 
+    switch (themeName) {
+        case "dark":
+            $("body").addClass("dark-mode");
+            break;
+        case "light":
+            // Do nothing, it's this by default
+            break;
+    }
+}
+
+var inputKinks = {}; // Global context obj
 var kinks = {};
-var inputKinks = {}
-var colors = {}
-var level = {};
+var choices = {};
+var listDescription = "";
+var showIncomplete = false;
 
-
-
-$(function(){
-
+$(function() {
     var imgurClientId = '9db53e5936cd02f';
 
     $("#listType").change(function() {
-        fileToRead = $("#listType").val() + '.txt';
-        $.get(fileToRead, function(data) {
-            $('#Kinks').text(data);
-            var selection = inputKinks.saveSelection();
-            var kinksText = $('#Kinks').val();
-            kinks = inputKinks.parseKinksText(kinksText);
-            inputKinks.fillInputList();
-        }, 'text');
-
-    }); 
+        inputKinks.loadKinkList('lists/' + $("#listType").val() + '.txt');
+    });
     
+    $("#themeType").change(function() {
+        updateTheme($("#themeType").val());
+    });
+
     inputKinks = {
         $columns: [],
         createCategory: function(name, fields){
@@ -74,17 +92,18 @@ $(function(){
         },
         createChoice: function(){
             var $container = $('<div>').addClass('choices');
-            var levels = Object.keys(level);
+            var levels = Object.keys(choices);
             for(var i = 0; i < levels.length; i++) {
                 $('<button>')
                         .addClass('choice')
-                        .addClass(level[levels[i]])
+                        .addClass(getCssName(levels[i]))
                         .data('level', levels[i])
                         .data('levelInt', i)
                         .attr('title', levels[i])
                         .appendTo($container)
                         .on('click', function(){
                             $container.find('button').removeClass('selected');
+                            $container.parents('td').removeClass('incomplete');
                             $(this).addClass('selected');
                         });
             }
@@ -96,7 +115,7 @@ $(function(){
                 var $choices = inputKinks.createChoice();
                 $choices.data('field', fields[i]);
                 $choices.addClass('choice-' + strToClass(fields[i]));
-                $('<td>').append($choices).appendTo($row);
+                $('<td>').addClass('incomplete').append($choices).appendTo($row);
             }
             var kinkLabel = $('<td>').text(kink.kinkName).appendTo($row);
             if(kink.kinkDesc) {showDescriptionButton(kink.kinkDesc, kinkLabel);}
@@ -165,6 +184,19 @@ $(function(){
                 location.hash = inputKinks.updateHash();
             });
         },
+        updateLegend: function() {
+            $(".legend").empty();
+            var c = Object.keys(choices);
+            for(var i = 0; i < c.length; i++) {
+                var choice = choices[c[i]];
+                var cssName = getCssName(choice.choiceName);
+                var label = $(`<div><span data-color="${choice.choiceColor}" class="choice ${cssName}"></span> <span class="legend-text">${choice.choiceName}</span></div>`).appendTo(".legend")
+                if(choice.choiceDesc) {
+                    showChoiceDescriptionButton(choice.choiceDesc, label.parent());
+                    label.addClass("legend-desc");
+                }
+            }
+        },
         init: function(){
             // Set up DOM
             inputKinks.fillInputList();
@@ -211,19 +243,19 @@ $(function(){
             context.font = "bold 13px Arial";
             context.fillStyle = '#000000';
 
-            var levels = Object.keys(colors);
-            var x = context.canvas.width - 15 - (120 * levels.length);
-            for(var i = 0; i < levels.length; i++) {
+            var choiceKeys = Object.keys(choices);
+            var x = context.canvas.width - 15 - (120 * choiceKeys.length);
+            for(var i = 0; i < choiceKeys.length; i++) {
                 context.beginPath();
                 context.arc(x + (120 * i), 17, 8, 0, 2 * Math.PI, false);
-                context.fillStyle = colors[levels[i]];
+                context.fillStyle = choices[choiceKeys[i]].choiceColor;
                 context.fill();
                 context.strokeStyle = 'rgba(0, 0, 0, 0.5)'
                 context.lineWidth = 1;
                 context.stroke();
 
                 context.fillStyle = '#000000';
-                context.fillText(levels[i], x + 15 + (i * 120), 22);
+                context.fillText(choiceKeys[i], x + 15 + (i * 120), 22);
             }
         },
         setupCanvas: function(width, height, username){
@@ -276,7 +308,7 @@ $(function(){
                 // Circles
                 for(var i = 0; i < drawCall.data.choices.length; i++){
                     var choice = drawCall.data.choices[i];
-                    var color = colors[choice];
+                    var color = choices[choice].choiceColor;
 
                     var x = 10 + drawCall.x + (i * 20);
                     var y = drawCall.y - 10;
@@ -291,6 +323,21 @@ $(function(){
                 }
 
             }
+        },
+        toggleIncompleteVisual: function() {
+            showIncomplete = !showIncomplete;
+
+            if (showIncomplete)
+            {
+                $("body").removeClass("incomplete-disabled");
+            }
+            else
+            {
+                $("body").addClass("incomplete-disabled");
+            }
+        },
+        findButtonPressed: function() {
+            // Highlight all kink sections that are not yet filled in
         },
         export: function(){
             var username = prompt("Please enter your name");
@@ -384,7 +431,7 @@ $(function(){
                         var $selection = $(this).find('.choice.selected');
                         var selection = ($selection.length > 0)
                                 ? $selection.data('level')
-                                : Object.keys(level)[0];
+                                : Object.keys(choices)[0];
 
                         drawCall.data.choices.push(selection);
                     });
@@ -525,13 +572,13 @@ $(function(){
                 if(!lvlInt) lvlInt = 0;
                 hashValues.push(lvlInt);
             });
-            return inputKinks.encode(Object.keys(colors).length, hashValues);
+            return inputKinks.encode(Object.keys(choices).length, hashValues);
         },
         parseHash: function(){
             var hash = location.hash.substring(1);
             if(hash.length < 10) return;
 
-            var values = inputKinks.decode(Object.keys(colors).length, hash);
+            var values = inputKinks.decode(Object.keys(choices).length, hash);
             var valueIndex = 0;
             $('#InputList .choices').each(function(){
                 var $this = $(this);
@@ -556,7 +603,25 @@ $(function(){
             return selection;
         },
         inputListToText: function(){
+            // not a fan of this function. lists are already stored as valid text
+            // so why not just hold onto the text and assign it on popup appear?
+            // TODO uh refactor later
             var KinksText = "";
+
+            // Parse choices and list description to text
+            var c = Object.keys(choices);
+            for (var i = 0; i < c.length; ++i) {
+                var choice = choices[c[i]]
+                KinksText += `- ${choice.choiceName}: ${choice.choiceColor}\r\n`;
+                if (choice.choiceDesc != "")
+                {
+                    KinksText += `? ${choice.choiceDesc}\r\n`;
+                }
+            }
+            
+            KinksText += `\r\n> ${listDescription}\r\n\r\n\r\n`;
+
+            // Parse kinks to text
             var kinkCats = Object.keys(kinks);
             for(var i = 0; i < kinkCats.length; i++){
                 var catName = kinkCats[i];
@@ -582,17 +647,70 @@ $(function(){
                 location.hash = inputKinks.updateHash();
             }, 300);
         },
+        loadKinkList: function(listFileName) {
+            $.get(listFileName, function(data) {
+                $('#Kinks').text(data);
+                var selection = inputKinks.saveSelection();
+                inputKinks.parseKinksText(data);
+                inputKinks.fillInputList();
+                inputKinks.updateLegend();
+            }, 'text');
+        },
         parseKinksText: function(kinksText){
-            var newKinks = {};
+            // Clear everything
+            kinks = {};
+            choices = {};
+            listDescription = "";
+
+            // All choices come with "Not Entered" by default, the only hard-coded choice
+            choices["Not Entered"] = { choiceName: "Not Entered", choiceColor: "#FFFFFF", choiceDesc: 'This kink has not been selected - also usable as a "non-applicable" option.' } 
+            updateCssRule('.choice.' + getCssName(choices["Not Entered"].choiceName), 'background-color: ' + choices["Not Entered"].choiceColor + ';');
+
             var lines = kinksText.replace(/\r/g, '').split("\n");
 
             var cat = null;
             var catName = null;
+            var currChoice = null;
             for(var i = 0; i < lines.length; i++){
                 var line = lines[i];
                 if(!line.length) continue;
 
+                // - : Parse choice and its color
+                if (line[0] === '-') {
+                    if (currChoice)
+                    {
+                        choices[currChoice.choiceName] = currChoice;
+                        // Insert color to CSS rules here! Seems fitting enough
+                        updateCssRule('.choice.' + getCssName(currChoice.choiceName), 'background-color: ' + currChoice.choiceColor + ';');
+                        currChoice = null;
+                    }
+                    lineParse = line.substring(1).trim().split(':');
+                    currChoice = { choiceName: lineParse[0].trim(), choiceColor: lineParse[1].trim(), choiceDesc: "" };
+                }
+
+                // ? : Parse description for current choice
+                if (line[0] === '?' && currChoice)
+                {
+                    currChoice.choiceDesc = line.substring(1).trim();
+                }
+
+                // > : Parse kink list description
+                if (line[0] === '>')
+                {
+                    listDescription = line.substring(1).trim();
+                    $('#ListDescription').text(listDescription);
+                }
+
+                // # : Parse category
                 if(line[0] === '#') {
+                    // Stop parsing choice if we still are (usually the last choice)
+                    if (currChoice)
+                    {
+                        choices[currChoice.choiceName] = currChoice;
+                        // Insert color to CSS rules here! Seems fitting enough
+                        updateCssRule('.choice.' + getCssName(currChoice.choiceName), 'background-color: ' + currChoice.choiceColor + ';');
+                        currChoice = null;
+                    }
                     if(catName){
                         if(!(cat.fields instanceof Array) || cat.fields.length < 1){
                             alert(catName + ' does not have any fields defined!');
@@ -602,28 +720,32 @@ $(function(){
                             alert(catName + ' does not have any kinks listed!');
                             return;
                         }
-                        newKinks[catName] = cat;
+                        kinks[catName] = cat;
                     }
                     catName = line.substring(1).trim();
                     cat = { kinks: [] };
                 }
                 if(!catName) continue;
+                // ( : Parse category sections (Giving/Receiving, Self/Partner, General, etc)
                 if(line[0] === '(') {
                     cat.fields = line.substring(1, line.length - 1).trim().split(',');
                     for(var j = 0; j < cat.fields.length; j++){
                         cat.fields[j] = cat.fields[j].trim();
                     }
                 }
+                // * : Parse kink for current category
                 if(line[0] === '*'){
                     var kink = {};
                     kink.kinkName = line.substring(1).trim();
                     cat.kinks.push(kink);
                 }
+                // ? : Parse description for current kink
                 if(line[0] === '?'){
+                    // what the fuck JS we're in-scope for this?
                     kink.kinkDesc = line.substring(1).trim();
                 }
             }
-            if(catName && !newKinks[catName]){
+            if(catName && !kinks[catName]){
                 if(!(cat.fields instanceof Array) || cat.fields.length < 1){
                     alert(catName + ' does not have any fields defined!');
                     return;
@@ -632,9 +754,8 @@ $(function(){
                     alert(catName + ' does not have any kinks listed!');
                     return;
                 }
-                newKinks[catName] = cat;
+                kinks[catName] = cat;
             }
-            return newKinks;
         }					
     };
 
@@ -650,8 +771,9 @@ $(function(){
         var selection = inputKinks.saveSelection();
         try {
             var kinksText = $('#Kinks').val();
-            kinks = inputKinks.parseKinksText(kinksText);
+            inputKinks.parseKinksText(kinksText);
             inputKinks.fillInputList();
+            inputKinks.updateLegend();
         }
         catch(e){
             alert('An error occured trying to parse the text entered, please correct it and try again');
@@ -677,20 +799,15 @@ $(function(){
         }).appendTo(attachElement);
     }
 
-    var stylesheet = document.styleSheets[0];
-    $('.legend .choice').each(function(){
-        var $choice = $(this);
-        var $parent = $choice.parent();
-        var text = $parent.text().trim();
-        var color = $choice.data('color');
-        var cssClass = this.className.replace('choice ', '').trim();
+    function showChoiceDescriptionButton(description, attachElement) {
+        $('<Button />', { "class": 'ChoiceDesc',  click: function() {
+                                                    $('#Description').text(description);
+                                                    $('#DescriptionOverlay').fadeIn();} 
+        }).appendTo(attachElement);
+    }
 
-        addCssRule('.choice.' + cssClass, 'background-color: ' + color + ';');
-        colors[text] = color;
-        level[text] = cssClass;
-    });
-
-    kinks = inputKinks.parseKinksText($('#Kinks').text().trim());
+    // Perform initial page refresh and initialization
+    inputKinks.loadKinkList('lists/' + $("#listType").val() + '.txt');
     inputKinks.init();
 
     (function(){
@@ -784,7 +901,7 @@ $(function(){
             },
             generateSecondary: function(kink){
                 var $container = $('<div class="kink-simple">');
-                $('<span class="choice">').addClass(level[kink.value]).appendTo($container);
+                $('<span class="choice">').addClass(choices[kink.value]).appendTo($container);
                 $('<span class="txt-category">').text(kink.category).appendTo($container);
                 if(kink.showField){
                     $('<span class="txt-field">').text(kink.field).appendTo($container);
@@ -880,7 +997,9 @@ $(function(){
             var $btn = $options.find('.big-choice').eq(btn);
             $btn.click();
         });
+        $('#FindBtn').on('click', inputKinks.findButtonPressed);
         $('#StartBtn').on('click', inputKinks.inputPopup.show);
+        $('#ShowIncomplete').on('change', inputKinks.toggleIncompleteVisual);
         $('#InputCurrent .closePopup, #InputOverlay').on('click', function(){
             $popup.fadeOut();
         });                    
