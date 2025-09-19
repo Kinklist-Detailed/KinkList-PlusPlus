@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Kinklist</title>
+        <title>Kinklist+</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script
@@ -15,34 +15,46 @@
     </head>
     <body class="dark-mode incomplete-disabled">
         <div class="widthWrapper">
-            <h1>Kinklist-Plus</h1>
-            <button id="Edit"></button>
-            <select id="listType">
-              <option value="classic">Classic</option>
-              <option value="detailed">Detailed</option>
-              <option value="plsno">Please Don't</option>
-            </select>
-            <select id="themeType">
-              <option value="dark" selected>Dark Mode</option>
-              <option value="light">Light Mode</option>
-            </select>
-            <div class="legend">
+            <div class="menus">
+                <div class="topMenu">
+                    <div>
+                        <h1 class="topMenuTitle">Kinklist-Plus</h1>
+                        <h3 class="topMenuVersion" title="tons of UI fixes + mobile >w<">v1.1</h3>
+                    </div>
+                    <button id="Edit"></button>
+                    <select id="listType">
+                        <option value="classic">Classic</option>
+                        <option value="detailed">Detailed</option>
+                        <option value="plsno">Please Don't</option>
+                    </select>
+                    <p id="ListDescription"></p>
+                    <div class="legend"></div>
+                </div>
+                <div class="rightMenu">
+                    <!--<button id="FindBtn" title="Highlights all of the unfilled kinks."></button>-->
+                    <div id="ExportWrapper">
+                        <button id="Export" title="Exports the entire list to an image on Imgur.">Export</button>
+                        <input type="text" id="URL">
+                        <div id="Loading">Loading</div>
+                    </div>
+                    <!--
+                    Disable for now
+                    <button id="StartBtn" title="Displays the kink list in a vertical carousel view. Great for focused viewing or mobile devices."></button>
+                    -->
+                    <select id="themeType">
+                        <option value="dark" selected>Dark Mode</option>
+                        <option value="light">Light Mode</option>
+                    </select>
+                    <label id="ShowIncompleteLabel">
+                        <input type="checkbox" id="ShowIncomplete">Show Incomplete
+                    </label>
+                </div>
             </div>
-            <!--<button id="FindBtn" title="Highlights all of the unfilled kinks."></button>-->
-            <div id="ExportWrapper">
-                <input type="text" id="URL">
-                <button id="Export" title="Exports the entire list to an image on Imgur.">Export</button>
-                <div id="Loading">Loading</div>
-            </div>
-            <button id="StartBtn" title="Displays the kink list in a vertical carousel view. Great for focused viewing or mobile devices."></button>
-            <label style="position: absolute;top: 62px;right: 5px;">
-            <input type="checkbox" id="ShowIncomplete">Show Incomplete</label>
-            <p id="ListDescription"></p>
             <div id="InputList"></div>
         </div>
         <footer>
-            <p>Kinklist-Plus v1.0 - Last updated 09/13/2025.</p>
-            <p>Created by <a href="https://github.com/zowchi/kinklist-plus">zowchi</a>, adapted from <a href="https://adhesivecheese.github.io/kinklist/">Kinklist</a> by <a href="https://github.com/adhesivecheese/kinklist">adhesivecheese.</a></p>
+            <p class="footerInfo"></p>
+            <p>Created by <a href="https://github.com/zowchi/kinklist-plus">zowchi</a>, forked from <a href="https://adhesivecheese.github.io/kinklist/">Kinklist</a> by <a href="https://github.com/adhesivecheese/kinklist">adhesivecheese</a>. Concept created by <a href="https://github.com/Goctionni/KinkList">Goctionni</a>.</a></p>
         </footer>
         <div id="EditOverlay" class="overlay">
             <textarea id="Kinks"></textarea>

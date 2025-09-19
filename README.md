@@ -1,19 +1,17 @@
-# Kinklist-Plus
+# Kinklist+
 
-**[Link to Kinklist-Plus](https://zowchi.github.io/kinklist-plus/)**
+This is a kink list/fetish chart generator, forked from [Kinklist](https://adhesivecheese.github.io/kinklist/) by [adhesivecheese](https://github.com/adhesivecheese/kinklist). Original source code and concept created by [Goctionni](https://github.com/Goctionni/KinkList), all rights are reserved to them.
 
-A kink list/fetish chart generator, adapted from [Kinklist](https://adhesivecheese.github.io/kinklist/) by [adhesivecheese](https://github.com/adhesivecheese/kinklist).
+Kinklist+ adds several new features, such as:
 
-Kinklist-Plus adds several new features, such as:
-
-- Flexible choices defined in the list format (no more hard-coded choices!)
-- Choice descriptions to resolve any ambiguity when filling out lists
-- List descriptions at the top of the page
-- Dark Mode (and future themes support)
-- "Find Incomplete" toggle to spot unfilled/missed kinks
-- Some minor formatting fixes to Kinklist's built-in lists
+- **Dark Mode**! (and future themes support)
+- **Customizable choices** defined in the list format (no more hard-coded choices)!
+  - Optional descriptions for choices can be added as well.
+- **List descriptions** at the top of the page!
+- New **Find Incomplete** toggle to highlight unfilled kinks!
+- Plenty of UI and formatting fixes, such as **ultrawide** and **improved mobile** support.
 - ...and more!
 
 What started initially as a desire to have a "Kinklist but with small changes" ended up being a longer project.
 
-Please enjoy.
+Please enjoy, and have fun.

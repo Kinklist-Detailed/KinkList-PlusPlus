@@ -1,3 +1,13 @@
+///////////////////////////////////////////////////////
+
+const SITE_NAME = "Kinklist+";
+const SITE_VERSION = "v1.1";
+const SITE_LASTUPDATED = "09/18/2025";
+
+const IMGUR_CLIENTID = "9db53e5936cd02f";
+
+///////////////////////////////////////////////////////
+
 var log = function(val, base) {
     return Math.log(val) / Math.log(base);
 };
@@ -60,8 +70,6 @@ var listDescription = "";
 var showIncomplete = false;
 
 $(function() {
-    var imgurClientId = '9db53e5936cd02f';
-
     $("#listType").change(function() {
         inputKinks.loadKinkList('lists/' + $("#listType").val() + '.txt');
     });
@@ -123,11 +131,11 @@ $(function() {
             return $row;
         },
         createColumns: function(){
-            var colClasses = ['100', '50', '33', '25'];
+            var colClasses = ['100', '50', '33', '25', '20', '16'];
 
             var numCols = Math.floor((document.body.scrollWidth - 20) / 400);
             if(!numCols) numCols = 1;
-            if(numCols > 4) numCols = 4;
+            if(numCols > 6) numCols = 6;
             var colClass = 'col' + colClasses[numCols - 1];
 
             inputKinks.$columns = [];
@@ -138,10 +146,12 @@ $(function() {
         placeCategories: function($categories){
             var $body = $('body');
             var totalHeight = 0;
+            var heights = [];
             for(var i = 0; i < $categories.length; i++) {
                 var $clone = $categories[i].clone().appendTo($body);
-                var height = $clone.height();;
+                var height = $clone.height();
                 totalHeight += height;
+                heights.push(height);
                 $clone.remove();
             }
 
@@ -149,10 +159,10 @@ $(function() {
             var colIndex = 0;
             for(var i = 0; i < $categories.length; i++) {
                 var curHeight = inputKinks.$columns[colIndex].height();
-                var catHeight = $categories[i].height();
-                if(curHeight + (catHeight / 2) > colHeight) colIndex++;
-                while(colIndex >= inputKinks.$columns.length) {
-                    colIndex--;
+                var catHeight = heights[i];
+                // Limit index, just in case
+                if (curHeight + (catHeight / 2) > colHeight) {
+                    colIndex = Math.min(colIndex+1, inputKinks.$columns.length-1);
                 }
                 inputKinks.$columns[colIndex].append($categories[i]);
             }
@@ -206,23 +216,21 @@ $(function() {
 
             // Make export button work
             $('#Export').on('click', inputKinks.export);
-            $('#URL').on('click', function(){ this.select(); });
+            $('#URL').on('click', function() { this.select(); });
 
             // On resize, redo columns
-            (function(){
-
+            (function() {
                 var lastResize = 0;
-                $(window).on('resize', function(){
+                $(window).on('resize', function() {
                     var curTime = (new Date()).getTime();
                     lastResize = curTime;
-                    setTimeout(function(){
+                    setTimeout(function() {
                         if(lastResize === curTime) {
                             inputKinks.fillInputList();
                             inputKinks.parseHash();
                         }
-                    }, 500);
+                    }, 250);
                 });
-
             })();
         },
         hashChars: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.=+*^!@",
@@ -277,7 +285,7 @@ $(function() {
 
             context.font = "bold 24px Arial";
             context.fillStyle = '#000000';
-            context.fillText('Kinklist 1.1 ' + username, 5, 25);
+            context.fillText(`${SITE_NAME} ${SITE_VERSION} ${username}`, 5, 25);
 
             inputKinks.drawLegend(context);
             return { context: context, canvas: canvas };
@@ -471,8 +479,8 @@ $(function() {
                 url: 'https://api.imgur.com/3/image',
                 type: 'POST',
                 headers: {
-                    // Your application gets an imgurClientId from Imgur
-                    Authorization: 'Client-ID ' + imgurClientId,
+                    // Your application gets a client ID from Imgur
+                    Authorization: 'Client-ID ' + IMGUR_CLIENTID,
                     Accept: 'application/json'
                 },
                 data: {
@@ -809,6 +817,12 @@ $(function() {
     // Perform initial page refresh and initialization
     inputKinks.loadKinkList('lists/' + $("#listType").val() + '.txt');
     inputKinks.init();
+
+    // Set site title, version and info
+    document.title = `${SITE_NAME} ${SITE_VERSION}`;
+    $('.topMenuTitle').text(SITE_NAME);
+    $('.topMenuVersion').text(SITE_VERSION);
+    $('.footerInfo').text(`${SITE_NAME} ${SITE_VERSION} - Last updated ${SITE_LASTUPDATED}.`);
 
     (function(){
         var $popup = $('#InputOverlay');
