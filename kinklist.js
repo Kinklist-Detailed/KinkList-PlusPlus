@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////
 
 const SITE_NAME = "Kinklist+";
-const SITE_VERSION = "v1.1";
-const SITE_LASTUPDATED = "09/18/2025";
+const SITE_VERSION = "v1.2";
+const SITE_LASTUPDATED = "09/19/2025";
 
 const IMGUR_CLIENTID = "9db53e5936cd02f";
 
@@ -50,17 +50,35 @@ var getCssName = function(inputName) {
     });
 }
 var updateTheme = function(themeName) {
-    // Remove all theme classes first
-    $("body").removeClass("dark-mode");
-
-    switch (themeName) {
-        case "dark":
-            $("body").addClass("dark-mode");
-            break;
-        case "light":
-            // Do nothing, it's this by default
-            break;
+    var theme = null;
+    for (let t of themes)
+    {
+        if (t.id == themeName)
+        {
+            theme = t;
+        }
     }
+    const root = document.documentElement;
+    root.style.setProperty("--color-bg", theme.color.background);
+    root.style.setProperty("--color-bgaccent", theme.color.bgAccent);
+    root.style.setProperty("--color-text", theme.color.text);
+    root.style.setProperty("--color-section", theme.color.section);
+    root.style.setProperty("--color-sectiontext", theme.color.sectionText);
+    root.style.setProperty("--color-borders", theme.color.borders);
+    root.style.setProperty("--color-accent1", theme.color.accent1);
+    root.style.setProperty("--color-accent2", theme.color.accent2);
+    root.style.setProperty("--color-incomplete", theme.color.incomplete);
+}
+var initThemes = function() {
+    $.get('themes.json', function(data) {
+        var themesParent = $('#themeType');
+        themeJSON = JSON.parse(data);
+        themes = themeJSON.themes;
+        for (let theme of themeJSON.themes)
+        {
+            themesParent.append($('<option></option>').val(theme.id).html(theme.name))
+        }
+    }, 'text');
 }
 
 var inputKinks = {}; // Global context obj
@@ -68,6 +86,7 @@ var kinks = {};
 var choices = {};
 var listDescription = "";
 var showIncomplete = false;
+var themes = {};
 
 $(function() {
     $("#listType").change(function() {
@@ -87,14 +106,17 @@ $(function() {
                     .append($('<h2>')
                     .text(name));
 
-            var $table = $('<table class="kinkGroup">').data('fields', fields);
+            var $parent = $('<div class="kinkGroupParent">')
+            var $table = $('<table class="kinkGroup">').data('fields', fields).appendTo($parent);
             var $thead = $('<thead>').appendTo($table);
             for(var i = 0; i < fields.length; i++) {
                 $('<th>').addClass('choicesCol').text(fields[i]).appendTo($thead);
             }
-            $('<th>').appendTo($thead);
+            var $rightSide = $('<th>').appendTo($thead);
+            var $button = $('<button class="kinkGroupCollapse">').text('—').appendTo($rightSide);
+            $button.on('click', inputKinks.toggleCategoryCollapsed);
             $('<tbody>').appendTo($table);
-            $category.append($table);
+            $category.append($parent);
 
             return $category;
         },
@@ -164,6 +186,7 @@ $(function() {
                 if (curHeight + (catHeight / 2) > colHeight) {
                     colIndex = Math.min(colIndex+1, inputKinks.$columns.length-1);
                 }
+                $categories[i].children('div').css('max-height', heights[i]*1.1);
                 inputKinks.$columns[colIndex].append($categories[i]);
             }
         },
@@ -332,8 +355,8 @@ $(function() {
 
             }
         },
-        toggleIncompleteVisual: function() {
-            showIncomplete = !showIncomplete;
+        updateIncompleteVisual: function() {
+            showIncomplete = $('#ShowIncomplete').is(':checked');
 
             if (showIncomplete)
             {
@@ -346,6 +369,19 @@ $(function() {
         },
         findButtonPressed: function() {
             // Highlight all kink sections that are not yet filled in
+        },
+        toggleCategoryCollapsed: function() {
+            var $parent = this.closest('div');
+
+            var isCollapsed = $parent.className.includes('kinkCollapsed');
+
+            if (isCollapsed) {
+                $parent.classList.remove('kinkCollapsed');
+                this.innerText = '—';
+            } else {
+                $parent.classList.add('kinkCollapsed');
+                this.innerText = '+';
+            }
         },
         export: function(){
             var username = prompt("Please enter your name");
@@ -670,9 +706,9 @@ $(function() {
             choices = {};
             listDescription = "";
 
-            // All choices come with "Not Entered" by default, the only hard-coded choice
-            choices["Not Entered"] = { choiceName: "Not Entered", choiceColor: "#FFFFFF", choiceDesc: 'This kink has not been selected - also usable as a "non-applicable" option.' } 
-            updateCssRule('.choice.' + getCssName(choices["Not Entered"].choiceName), 'background-color: ' + choices["Not Entered"].choiceColor + ';');
+            // All choices come with "Not Applicable" by default, the only hard-coded choice
+            choices["Not Applicable"] = { choiceName: "Not Applicable", choiceColor: "#FFFFFF", choiceDesc: "This kink does not apply to you, for any reason you decide." } 
+            updateCssRule('.choice.' + getCssName(choices["Not Applicable"].choiceName), 'background-color: ' + choices["Not Applicable"].choiceColor + ';');
 
             var lines = kinksText.replace(/\r/g, '').split("\n");
 
@@ -818,11 +854,15 @@ $(function() {
     inputKinks.loadKinkList('lists/' + $("#listType").val() + '.txt');
     inputKinks.init();
 
+    initThemes();
+
     // Set site title, version and info
     document.title = `${SITE_NAME} ${SITE_VERSION}`;
     $('.topMenuTitle').text(SITE_NAME);
     $('.topMenuVersion').text(SITE_VERSION);
     $('.footerInfo').text(`${SITE_NAME} ${SITE_VERSION} - Last updated ${SITE_LASTUPDATED}.`);
+
+    inputKinks.updateIncompleteVisual();
 
     (function(){
         var $popup = $('#InputOverlay');
@@ -1013,7 +1053,7 @@ $(function() {
         });
         $('#FindBtn').on('click', inputKinks.findButtonPressed);
         $('#StartBtn').on('click', inputKinks.inputPopup.show);
-        $('#ShowIncomplete').on('change', inputKinks.toggleIncompleteVisual);
+        $('#ShowIncomplete').on('change', inputKinks.updateIncompleteVisual);
         $('#InputCurrent .closePopup, #InputOverlay').on('click', function(){
             $popup.fadeOut();
         });                    

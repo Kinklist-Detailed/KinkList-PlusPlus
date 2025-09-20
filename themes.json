@@ -1,0 +1,94 @@
+{
+  "themes": [
+    {
+      "id": "dark",
+      "name": "Dark Mode",
+      "color": {
+        "background": "#222222",
+        "bgAccent": "#666666",
+        "text": "#FFFFFF",
+        "section": "#555555",
+        "sectionText": "#FFFFFF",
+        "borders": "#999999",
+        "accent1": "#4980AE",
+        "accent2": "#00B22D",
+        "incomplete": "#880000"
+      }
+    },
+    {
+      "id": "light",
+      "name": "Light Mode",
+      "color": {
+        "background": "#FFFFFF",
+        "bgAccent": "#BBBBBB",
+        "text": "#000000",
+        "section": "#666666",
+        "sectionText": "#FFFFFF",
+        "borders": "#999999",
+        "accent1": "#4980AE",
+        "accent2": "#00B22D",
+        "incomplete": "#FF8888"
+      }
+    },
+    {
+        "id": "solarizedDark",
+        "name": "Solarized Dark",
+        "color": {
+            "background": "#002B36",
+            "bgAccent": "#586E75",
+            "text": "#93A1A1",
+            "section": "#586E75",
+            "sectionText": "#EEE8D5",
+            "borders": "#657B83",
+            "accent1": "#CB4B16",
+            "accent2": "#2AA198",
+            "incomplete": "#DC322F"
+        }
+    },
+    {
+        "id": "solarized",
+        "name": "Solarized Light",
+        "color": {
+            "background": "#EEE8D5",
+            "bgAccent": "#93A1A1",
+            "text": "#586E75",
+            "section": "#657B83",
+            "sectionText": "#FDF6E3",
+            "borders": "#839496",
+            "accent1": "#CB4B16",
+            "accent2": "#2AA198",
+            "incomplete": "#CB4B16"
+        }
+    },
+    {
+        "id": "rosePineMoon",
+        "name": "Rosé Pine Moon",
+        "color": {
+            "background": "#232136",
+            "bgAccent": "#6e6a86",
+            "text": "#e0def4",
+            "section": "#c4a7e7",
+            "sectionText": "#393552",
+            "borders": "#56526e",
+            "accent1": "#3e8fb0",
+            "accent2": "#f6c177",
+            "incomplete": "#eb6f92"
+        }
+    },
+    {
+        "id": "rosePineDawn",
+        "name": "Rosé Pine Dawn",
+        "color": {
+            "background": "#faf4ed",
+            "bgAccent": "#9893a5",
+            "text": "#575279",
+            "section": "#b4637a",
+            "sectionText": "#f2e9e1",
+            "borders": "#cecacd",
+            "accent1": "#286983",
+            "accent2": "#ea9d34",
+            "incomplete": "#d7827e"
+        }
+    }
+  ]
+}
