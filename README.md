@@ -4,9 +4,10 @@ This is a kink list/fetish chart generator, forked from [Kinklist](https://adhes
 
 Kinklist+ adds several new features, such as:
 
-- **Dark Mode**! (and future themes support)
+- **Several themes** to choose from, including **Dark Mode** by default!
 - **Customizable choices** defined in the list format (no more hard-coded choices)!
   - Optional descriptions for choices can be added as well.
+- **Collapsible** categories!
 - **List descriptions** at the top of the page!
 - New **Find Incomplete** toggle to highlight unfilled kinks!
 - Plenty of UI and formatting fixes, such as **ultrawide** and **improved mobile** support.
