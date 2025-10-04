@@ -1,21 +1,6 @@
 {
   "themes": [
     {
-      "id": "dark",
-      "name": "Dark Mode",
-      "color": {
-        "background": "#222222",
-        "bgAccent": "#666666",
-        "text": "#FFFFFF",
-        "section": "#555555",
-        "sectionText": "#FFFFFF",
-        "borders": "#999999",
-        "accent1": "#4980AE",
-        "accent2": "#00B22D",
-        "incomplete": "#880000"
-      }
-    },
-    {
       "id": "light",
       "name": "Light Mode",
       "color": {
@@ -28,6 +13,21 @@
         "accent1": "#4980AE",
         "accent2": "#00B22D",
         "incomplete": "#FF8888"
+      }
+    },    
+    {
+      "id": "dark",
+      "name": "Dark Mode",
+      "color": {
+        "background": "#222222",
+        "bgAccent": "#666666",
+        "text": "#FFFFFF",
+        "section": "#555555",
+        "sectionText": "#FFFFFF",
+        "borders": "#999999",
+        "accent1": "#4980AE",
+        "accent2": "#00B22D",
+        "incomplete": "#880000"
       }
     },
     {
